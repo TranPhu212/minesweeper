@@ -1,7 +1,7 @@
 function changeMode() {
     currentMode = document.getElementById("modeSelect").value;
 
-    // Mines options (3 mốc, <= half cells)
+    // Update mines options
     const minesSelect = document.getElementById("minesSelect");
     minesSelect.innerHTML = '';
     let minesOptions = [];
@@ -18,11 +18,11 @@ function changeMode() {
     });
     minesSelect.value = minesOptions[minesOptions.length - 1];
 
-    // Time options (chỉ update khi cần)
+    // Update time options
     updateTimeOptions();
 
-    // Start game với mines mới
-    startGame(getRowsCols()[0], getRowsCols()[1], minesSelect.value);
+    // Reset game với mines mặc định max
+    restartGameWithCurrentSettings();
 }
 
 function getRowsCols() {
@@ -51,18 +51,30 @@ function updateTimeOptions() {
 }
 
 function restartCurrentMode() {
-    changeMode();
+    restartGameWithCurrentSettings();
 }
 
-// NEW: Toggle countdown panel
+// Hàm chung reset game với settings hiện tại
+function restartGameWithCurrentSettings() {
+    const [r, c] = getRowsCols();
+    const m = parseInt(document.getElementById("minesSelect").value);
+    startGame(r, c, m);
+}
+
+// NEW: Reset khi thay đổi mines hoặc time
+document.getElementById("minesSelect").addEventListener("change", restartGameWithCurrentSettings);
+
+document.getElementById("timeLimitSelect").addEventListener("change", restartGameWithCurrentSettings);
+
+// Toggle countdown panel + reset game
 document.getElementById("countdownCheckbox").addEventListener("change", function() {
     const panel = document.getElementById("countdownPanel");
     if (this.checked) {
         panel.style.display = "flex";
-        updateTimeOptions();  // Update options khi bật
+        updateTimeOptions();
     } else {
         panel.style.display = "none";
-        timeLimit = 0;  // Tắt countdown
+        timeLimit = 0;
     }
-    restartCurrentMode();  // Reset game để áp dụng
+    restartGameWithCurrentSettings(); // Reset để áp dụng bật/tắt countdown
 });

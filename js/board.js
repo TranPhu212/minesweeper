@@ -1,21 +1,22 @@
 function startGame(r, c, m) {
     rows = r;
     cols = c;
-    mines = m; // Từ minesSelect
-    flagsLeft = m; // Reset flagsLeft ngay
+    mines = m;
+    flagsLeft = m;
     timer = 0;
 
-    // Reset countdown đúng mốc chọn (nếu checkbox tick)
+    // Countdown setup
     const checkbox = document.getElementById("countdownCheckbox");
     if (checkbox && checkbox.checked) {
-        const selectedMinutes = parseInt(document.getElementById("timeLimitSelect").value);
-        timeLimit = selectedMinutes * 60; // Ví dụ 5 phút = 300s
+        timeLimit = parseInt(document.getElementById("timeLimitSelect").value) * 60;
         timeLeft = timeLimit;
         document.getElementById("timeLeft").innerText = timeLeft;
     } else {
         timeLimit = 0;
         timeLeft = 0;
-        document.getElementById("timeLeft").innerText = "--";
+        if (document.getElementById("timeLeft")) {
+            document.getElementById("timeLeft").innerText = "--";
+        }
     }
 
     gameOver = false;
@@ -24,7 +25,7 @@ function startGame(r, c, m) {
     clearInterval(interval);
     if (intervalCountdown) clearInterval(intervalCountdown);
 
-    document.getElementById("flags").innerText = flagsLeft; // Update display ngay
+    document.getElementById("flags").innerText = flagsLeft;
     document.getElementById("time").innerText = timer;
 
     board = [];

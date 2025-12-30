@@ -186,7 +186,7 @@ h1 {
 }
 
 .cell.wrong-flag::before {
-    content: 'Cross';
+    content: '❌';
     font-size: 1.8em;
     position: absolute;
     top: 50%;
