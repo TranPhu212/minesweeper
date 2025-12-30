@@ -62,11 +62,18 @@ function startGame(r, c, m) {
             cell.style.width = cellSize + "px";
             cell.style.height = cellSize + "px";
 
+            // Desktop: left click open, right flag
             cell.onclick = () => openCell(i, j);
             cell.oncontextmenu = e => {
                 e.preventDefault();
                 toggleFlag(i, j);
             };
+
+            // Mobile: touchstart show options
+            cell.addEventListener("touchstart", (e) => {
+                e.preventDefault();
+                showOptions(i, j, e.touches[0]);
+            });
 
             boardDiv.appendChild(cell);
 
@@ -79,6 +86,62 @@ function startGame(r, c, m) {
             };
         }
     }
+}
+
+// NEW: Mobile options bubbles
+let flagBubble, digBubble, overlay;
+
+function showOptions(i, j, touchEvent) {
+    // Create bubbles if not exist
+    if (!flagBubble) {
+        flagBubble = document.createElement("div");
+        flagBubble.innerHTML = "🚩";
+        flagBubble.classList.add("bubble", "bubble-flag");
+        document.body.appendChild(flagBubble);
+
+        digBubble = document.createElement("div");
+        digBubble.innerHTML = "⛏️";
+        digBubble.classList.add("bubble", "bubble-dig");
+        document.body.appendChild(digBubble);
+
+        overlay = document.createElement("div");
+        overlay.classList.add("bubble-overlay");
+        document.body.appendChild(overlay);
+    }
+
+    // Position bubbles bao quanh touch point
+    const x = touchEvent.clientX;
+    const y = touchEvent.clientY - 50; // Above finger a bit
+
+    // Flag left
+    flagBubble.style.left = `${x - 60}px`;
+    flagBubble.style.top = `${y}px`;
+    flagBubble.style.display = "block";
+    flagBubble.onclick = (e) => {
+        e.stopPropagation();
+        toggleFlag(i, j);
+        hideOptions();
+    };
+
+    // Dig right
+    digBubble.style.left = `${x + 10}px`;
+    digBubble.style.top = `${y}px`;
+    digBubble.style.display = "block";
+    digBubble.onclick = (e) => {
+        e.stopPropagation();
+        openCell(i, j);
+        hideOptions();
+    };
+
+    // Overlay hide on tap outside
+    overlay.style.display = "block";
+    overlay.onclick = hideOptions;
+}
+
+function hideOptions() {
+    if (flagBubble) flagBubble.style.display = "none";
+    if (digBubble) digBubble.style.display = "none";
+    if (overlay) overlay.style.display = "none";
 }
 
 function placeMines(safeRow, safeCol) {

@@ -7,11 +7,13 @@ function openCell(i, j) {
     if (firstClick) {
         firstClick = false;
 
+        // Start timer count up
         interval = setInterval(() => {
             timer++;
             document.getElementById("time").innerText = timer;
         }, 1000);
 
+        // Start countdown nếu bật
         if (timeLimit > 0) {
             timeLeft = timeLimit;
             document.getElementById("timeLeft").innerText = timeLeft;
@@ -19,7 +21,7 @@ function openCell(i, j) {
                 timeLeft--;
                 document.getElementById("timeLeft").innerText = timeLeft;
                 if (timeLeft <= 0) {
-                    endGame(false, true);
+                    endGame(false, true); // Time out lose
                 }
             }, 1000);
         }
@@ -147,14 +149,26 @@ function endGame(win, timeOut = false) {
     if (!win) {
         const wrapper = document.querySelector(".board-wrapper");
         wrapper.classList.add("screen-shake");
-        setTimeout(() => wrapper.classList.remove("screen-shake"), 5000); // Lâu hơn cho sequence
+        setTimeout(() => wrapper.classList.remove("screen-shake"), 3000);
 
-        // SEQUENCE: 1. Rung màn hình → 2. Nổ bom → 3. Wrong flags (sau 500ms)
         explodeUnflaggedMines();
-        setTimeout(markWrongFlags, mines * 200 + 500); // Chờ sau khi bom nổ hết
+
+        // NEW: Tính số unflaggedMines để chờ nổ hết
+        let unflaggedCount = 0;
+        for (let a = 0; a < rows; a++) {
+            for (let b = 0; b < cols; b++) {
+                if (board[a][b].mine && !board[a][b].flag && !board[a][b].open) {
+                    unflaggedCount++;
+                }
+            }
+        }
+
+        // Delay markWrongFlags sau khi bom nổ hết (200ms * count + buffer 500ms)
+        const explodeTotalTime = unflaggedCount * 200 + 500;
+        setTimeout(markWrongFlags, explodeTotalTime);
     }
 
-    const delay = win ? 200 : (mines * 200 + 1000); // Delay cho alert (sau sequence)
+    const delay = win ? 200 : mines * 200 + 1200; // Delay dài hơn cho bom chậm
     setTimeout(() => {
         if (timeOut) {
             alert("Time out! Bạn đã thua! 💥");
@@ -189,38 +203,29 @@ function explodeUnflaggedMines() {
     }
     unflaggedMines.sort(() => Math.random() - 0.5);
 
+    // Nổ chậm hơn: 200ms mỗi quả
     unflaggedMines.forEach((cell, index) => {
-        // CHẬM HƠN: 200ms giữa mỗi quả bom (50 mìn ~10s drama)
         setTimeout(() => {
             cell.el.innerText = "💣";
             cell.el.classList.add("open", "mine", "explode");
-        }, index * 200); // Tăng từ 100ms → 200ms
+        }, index * 200);
     });
 }
 
 function markWrongFlags() {
-    // Animation wrong flags: Chạy chậm từng ô (100ms/ô) cho drama
-    let wrongFlags = [];
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             const cell = board[i][j];
             if (cell.flag && !cell.mine) {
-                wrongFlags.push(cell);
+                if (cell.removeTimeout) {
+                    clearTimeout(cell.removeTimeout);
+                    delete cell.removeTimeout;
+                }
+                cell.flag = false;
+                cell.el.classList.remove("flag");
+                void cell.el.offsetWidth;
+                cell.el.classList.add("wrong-flag"); // Trigger anim rụng CUỐI CÙNG
             }
         }
     }
-    wrongFlags.sort(() => Math.random() - 0.5);
-
-    wrongFlags.forEach((cell, index) => {
-        setTimeout(() => {
-            if (cell.removeTimeout) {
-                clearTimeout(cell.removeTimeout);
-                delete cell.removeTimeout;
-            }
-            cell.flag = false;
-            cell.el.classList.remove("flag");
-            void cell.el.offsetWidth;
-            cell.el.classList.add("wrong-flag"); // Trigger ❌ animation
-        }, index * 100);
-    });
 }

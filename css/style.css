@@ -290,3 +290,75 @@ h1 {
         gap: 5px;
     }
 }
+
+/* ===== MOBILE TOUCH BUBBLES (CỜ & ĐÀO) ===== */
+.bubble {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    user-select: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: auto;
+}
+
+.bubble:active {
+    transform: scale(0.9);
+}
+
+.bubble-flag {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+}
+
+.bubble-dig {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.bubble.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Overlay che nền khi bubbles hiện (tap outside để ẩn) */
+.bubble-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    z-index: 999;
+    display: none;
+    pointer-events: auto;
+}
+
+/* Responsive: Trên desktop ẩn bubbles (không cần) */
+@media (pointer: fine) {
+    .bubble, .bubble-overlay {
+        display: none !important;
+    }
+}
+
+/* Đảm bảo cờ hiện 🚩 (sửa lỗi chữ "Flag") */
+.cell.flag::before {
+    content: '🚩';
+    font-size: 1.4em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: bottom center;
+    animation: plantFlag 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both, flagWave 2s ease-in-out infinite 0.4s;
+    z-index: 1;
+}
