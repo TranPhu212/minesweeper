@@ -62,17 +62,23 @@ function startGame(r, c, m) {
             cell.style.width = cellSize + "px";
             cell.style.height = cellSize + "px";
 
-            // Desktop: left click open, right flag
+            // Desktop
             cell.onclick = () => openCell(i, j);
             cell.oncontextmenu = e => {
                 e.preventDefault();
                 toggleFlag(i, j);
             };
 
-            // Mobile: touchstart show options
+            // Mobile touch
             cell.addEventListener("touchstart", (e) => {
                 e.preventDefault();
-                showOptions(i, j, e.touches[0]);
+                if (firstClick) {
+                    // First tap: Mở luôn (đào)
+                    openCell(i, j);
+                } else {
+                    // Từ lần 2: Sổ bubbles
+                    showMobileOptions(i, j, e.touches[0]);
+                }
             });
 
             boardDiv.appendChild(cell);
@@ -88,12 +94,12 @@ function startGame(r, c, m) {
     }
 }
 
-// NEW: Mobile options bubbles
+// MOBILE BUBBLES
 let flagBubble, digBubble, overlay;
 
-function showOptions(i, j, touchEvent) {
-    // Create bubbles if not exist
+function showMobileOptions(i, j, touch) {
     if (!flagBubble) {
+        // Create once
         flagBubble = document.createElement("div");
         flagBubble.innerHTML = "🚩";
         flagBubble.classList.add("bubble", "bubble-flag");
@@ -109,38 +115,45 @@ function showOptions(i, j, touchEvent) {
         document.body.appendChild(overlay);
     }
 
-    // Position bubbles bao quanh touch point
-    const x = touchEvent.clientX;
-    const y = touchEvent.clientY - 50; // Above finger a bit
+    const rect = board[i][j].el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-    // Flag left
-    flagBubble.style.left = `${x - 60}px`;
-    flagBubble.style.top = `${y}px`;
+    // Bên trái: Cắm cờ 🚩
+    flagBubble.style.left = `${centerX - rect.width - 20}px`; // Trái ô
+    flagBubble.style.top = `${centerY - 25}px`;
     flagBubble.style.display = "block";
+    flagBubble.classList.add("show");
     flagBubble.onclick = (e) => {
         e.stopPropagation();
         toggleFlag(i, j);
-        hideOptions();
+        hideMobileOptions();
     };
 
-    // Dig right
-    digBubble.style.left = `${x + 10}px`;
-    digBubble.style.top = `${y}px`;
+    // Phía trên: Đào ⛏️
+    digBubble.style.left = `${centerX - 25}px`;
+    digBubble.style.top = `${centerY - rect.height - 20}px`; // Trên ô
     digBubble.style.display = "block";
+    digBubble.classList.add("show");
     digBubble.onclick = (e) => {
         e.stopPropagation();
         openCell(i, j);
-        hideOptions();
+        hideMobileOptions();
     };
 
-    // Overlay hide on tap outside
     overlay.style.display = "block";
-    overlay.onclick = hideOptions;
+    overlay.onclick = hideMobileOptions;
 }
 
-function hideOptions() {
-    if (flagBubble) flagBubble.style.display = "none";
-    if (digBubble) digBubble.style.display = "none";
+function hideMobileOptions() {
+    if (flagBubble) {
+        flagBubble.style.display = "none";
+        flagBubble.classList.remove("show");
+    }
+    if (digBubble) {
+        digBubble.style.display = "none";
+        digBubble.classList.remove("show");
+    }
     if (overlay) overlay.style.display = "none";
 }
 

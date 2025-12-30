@@ -291,23 +291,23 @@ h1 {
     }
 }
 
-/* ===== MOBILE TOUCH BUBBLES (CỜ & ĐÀO) ===== */
 .bubble {
     position: fixed;
     width: 50px;
     height: 50px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
+    font-size: 30px;
     cursor: pointer;
     user-select: none;
     z-index: 1000;
     opacity: 0;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: scale(0);
+    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     pointer-events: auto;
 }
 
@@ -330,35 +330,40 @@ h1 {
     transform: scale(1);
 }
 
-/* Overlay che nền khi bubbles hiện (tap outside để ẩn) */
+/* Overlay tap outside hide */
 .bubble-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     background: transparent;
     z-index: 999;
     display: none;
     pointer-events: auto;
 }
 
-/* Responsive: Trên desktop ẩn bubbles (không cần) */
-@media (pointer: fine) {
-    .bubble, .bubble-overlay {
-        display: none !important;
-    }
+/* Chỉ mobile (touch device) */
+@media (pointer: coarse) {
+    /* Ẩn desktop contextmenu nếu cần */
 }
 
-/* Đảm bảo cờ hiện 🚩 (sửa lỗi chữ "Flag") */
+/* SỬA ICON CHUẨN */
 .cell.flag::before {
-    content: '🚩';
-    font-size: 1.4em;
+    content: '🚩';  /* Sửa từ 'Flag' */
+}
+
+.cell.mine.explode {
+    /* Thêm 💣 nếu cần, nhưng class explode đã có */
+}
+
+.cell.mine.explode::after {
+    content: '💣';  /* Thay "Mine" */
+    font-size: 1.8em;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    transform-origin: bottom center;
-    animation: plantFlag 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both, flagWave 2s ease-in-out infinite 0.4s;
-    z-index: 1;
+    z-index: 2;
+}
+
+.cell.wrong-flag::before {
+    content: '❌';  /* Sửa từ 'Cross' */
 }
