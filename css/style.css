@@ -92,56 +92,66 @@
         transform: scale(0.95);
     }
 
-    .cell.open {
-        background: #7ef07e !important;
-        cursor: default;
-    }
+.cell.light {
+    background-color: #aad751;
+}
 
-    .cell.mine {
-        background: #e74c3c;
-        color: white;
-    }
+.cell.dark {
+    background-color: #a2d149;
+}
 
-    .cell.flag {
-        background: #ff7675;
-    }
+.cell.open.light {
+    background-color: #e5c29f;
+}
 
-    .cell.light {
-        background: #8eff8e;   /* ô sáng */
-    }
+.cell.open.dark {
+    background-color: #d7b899;
+}
 
-    .cell.dark {
-        background: #a8e6cf;   /* ô tối */
-    }
-    .cell:not(.open):hover {
-        filter: brightness(1.08);
-    }
+.cell:not(.open):hover {
+    filter: brightness(1.05);
+}
 
-    /* 🚩 FLAG ANIMATION */
-    @keyframes flagIn {
-        0% {
-            transform: scale(0) rotate(-30deg);
-            opacity: 0;
-        }
-        70% {
-            transform: scale(1.2) rotate(10deg);
-            opacity: 1;
-        }
-        100% {
-            transform: scale(1) rotate(0deg);
-        }
-    }
+.cell.mine {
+    background-color: #f23607;
+    color: white;
+}
 
-    @keyframes flagOut {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: scale(0);
-            opacity: 0;
-        }
+.cell.flag {
+    background: transparent;
+    animation: flag-pop 0.15s ease-out;
+    transform-origin: bottom center;
+}
+
+.cell.flag {
+    background: transparent;
+    animation: flag-pop 0.15s ease-out;
+    transform-origin: bottom center;
+}
+
+@keyframes flag-pop {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
     }
+    80% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.cell.flag-removing {
+    animation: flag-fade 0.12s ease-in;
+}
+
+@keyframes flag-fade {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
 
     .cell.flag {
         animation: flagIn 0.25s ease-out;
@@ -167,7 +177,6 @@
         }
     }
 
-/* 💥 MINE EXPLOSION */
 @keyframes mineExplode {
     0% {
         transform: scale(1) rotate(0deg);
@@ -190,34 +199,12 @@
     animation: mineExplode 0.45s ease-out;
 }
 
-/* 🚩 FLAG REMOVE 3D */
-@keyframes flagPopFall {
-    0% {
-        transform: translateY(0) rotateX(0deg) scale(1);
-        opacity: 1;
-    }
-    40% {
-        transform: translateY(-20px) rotateX(40deg) scale(1.2);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(20px) rotateX(-70deg) scale(0.4);
-        opacity: 0;
-    }
-}
-
-.cell.flag-removing {
-    animation: flagPopFall 0.35s cubic-bezier(.17,.67,.3,1.2);
-    transform-origin: bottom center;
-    perspective: 600px;
-}
-
 
 .cell.open[data-n="1"] { color: #1976d2; }
 .cell.open[data-n="2"] { color: #388e3c; }
 .cell.open[data-n="3"] { color: #d32f2f; }
-.cell.open[data-n="4"] { color: #0d47a1; }
-.cell.open[data-n="5"] { color: #5d4037; }
+.cell.open[data-n="4"] { color: #7b1fa2; }
+.cell.open[data-n="5"] { color: #ff8f00; }
 .cell.open[data-n="6"] { color: #00838f; }
-.cell.open[data-n="7"] { color: #000000; }
-.cell.open[data-n="8"] { color: #616161; }
+.cell.open[data-n="7"] { color: #424242; }
+.cell.open[data-n="8"] { color: #000000; }

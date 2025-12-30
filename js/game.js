@@ -51,13 +51,16 @@ function toggleFlag(i, j) {
 
     const cell = board[i][j];
     if (cell.open) return;
-
     if (!cell.flag && flagsLeft === 0) return;
 
     if (!cell.flag) {
         cell.flag = true;
         cell.el.innerText = "🚩";
+
+        cell.el.classList.remove("flag");
+        void cell.el.offsetWidth;
         cell.el.classList.add("flag");
+
         flagsLeft--;
     } else {
         cell.el.classList.add("flag-removing");
@@ -66,13 +69,14 @@ function toggleFlag(i, j) {
             cell.flag = false;
             cell.el.innerText = "";
             cell.el.classList.remove("flag", "flag-removing");
-        }, 350);
+        }, 120);
 
         flagsLeft++;
     }
 
     document.getElementById("flags").innerText = flagsLeft;
 }
+
 
 function endGame(win) {
     gameOver = true;
