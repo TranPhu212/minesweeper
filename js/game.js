@@ -10,13 +10,12 @@ function openCell(i, j) {
             timer++;
             document.getElementById("time").innerText = timer;
         }, 1000);
-
         placeMines(i, j);
     }
 
-    // Mở ô hiện tại ngay lập tức + TRIGGER ANIM
+    // Mở ô click NGAY + anim flip/shake
     cell.open = true;
-    cell.el.classList.add("open", "shake-light");  // ← THÊM SHAKE-LIGHT
+    cell.el.classList.add("open", "shake-light");
 
     if (cell.mine) {
         cell.el.innerText = "💣";
@@ -29,45 +28,63 @@ function openCell(i, j) {
         cell.el.innerText = cell.count;
         cell.el.dataset.n = cell.count;
     } else {
-        openEmptyArea(i, j);
+        // WAVE LAN TỎA: Delay tăng dần từ tâm (ô click)
+        waveFloodOpen(i, j);
     }
 
     checkWin();
 }
 
-function openEmptyArea(startI, startJ) {
-    const queue = [{i: startI, j: startJ}];
+// WAVE FLOOD OPEN: Lan tỏa từ từ với delay theo khoảng cách Manhattan (wave thật)
+function waveFloodOpen(startI, startJ) {
+    const queue = [];
     const visited = new Set();
+    const startKey = `${startI},${startJ}`;
+
+    queue.push({i: startI, j: startJ, dist: 0});
+    visited.add(startKey);
+
+    let delay = 0;
+    const baseDelay = 20;  // Tốc độ wave (20ms/ô → mượt, điều chỉnh nếu muốn nhanh/chậm)
 
     while (queue.length > 0) {
-        const {i, j} = queue.shift();
-        const key = `${i},${j}`;
-        if (visited.has(key)) continue;
-        visited.add(key);
+        const {i, j, dist} = queue.shift();
+        const cell = board[i][j];
 
-        for (let x = -1; x <= 1; x++) {
-            for (let y = -1; y <= 1; y++) {
-                const ni = i + x;
-                const nj = j + y;
+        // Mở ô với delay theo khoảng cách (wave lan ra)
+        setTimeout(() => {
+            if (cell.open) return;  // Đề phòng overlap
+            cell.open = true;
+            cell.el.classList.add("open", "shake-light");
 
-                if (ni >= 0 && ni < rows && nj >= 0 && nj < cols) {
-                    const neighbor = board[ni][nj];
+            if (cell.count > 0) {
+                cell.el.innerText = cell.count;
+                cell.el.dataset.n = cell.count;
+            }
+        }, delay);
 
-                    if (!neighbor.open && !neighbor.flag && !neighbor.mine) {
-                        neighbor.open = true;
-                        neighbor.el.classList.add("open", "shake-light");  // ← THÊM SHAKE VÀO FLOOD
+        // Thêm lân cận nếu ô 0
+        if (cell.count === 0) {
+            for (let x = -1; x <= 1; x++) {
+                for (let y = -1; y <= 1; y++) {
+                    if (x === 0 && y === 0) continue;
+                    const ni = i + x;
+                    const nj = j + y;
+                    const nKey = `${ni},${nj}`;
 
-                        if (neighbor.count > 0) {
-                            neighbor.el.innerText = neighbor.count;
-                            neighbor.el.dataset.n = neighbor.count;
-                        } else {
-                            queue.push({i: ni, j: nj});
-                        }
+                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols &&
+                        !visited.has(nKey) && !board[ni][nj].flag && !board[ni][nj].mine) {
+                        visited.add(nKey);
+                        queue.push({i: ni, j: nj, dist: dist + 1});
                     }
                 }
             }
         }
+
+        delay += baseDelay;
     }
+
+    setTimeout(checkWin, delay + 50);
 }
 
 function toggleFlag(i, j) {
@@ -75,7 +92,24 @@ function toggleFlag(i, j) {
 
     const cell = board[i][j];
     if (cell.open) return;
+
+    if (cell.el.classList.contains("flag-removing")) {
+        if (cell.removeTimeout) clearTimeout(cell.removeTimeout);
+        cell.flag = false;
+        cell.el.innerText = "";
+        cell.el.classList.remove("flag", "flag-removing");
+        delete cell.removeTimeout;
+        flagsLeft++;
+        document.getElementById("flags").innerText = flagsLeft;
+        return;
+    }
+
     if (!cell.flag && flagsLeft === 0) return;
+
+    if (cell.removeTimeout) {
+        clearTimeout(cell.removeTimeout);
+        delete cell.removeTimeout;
+    }
 
     if (!cell.flag) {
         cell.flag = true;
@@ -86,10 +120,11 @@ function toggleFlag(i, j) {
         flagsLeft--;
     } else {
         cell.el.classList.add("flag-removing");
-        setTimeout(() => {
+        cell.removeTimeout = setTimeout(() => {
             cell.flag = false;
             cell.el.innerText = "";
             cell.el.classList.remove("flag", "flag-removing");
+            delete cell.removeTimeout;
         }, 250);
         flagsLeft++;
     }
@@ -104,14 +139,13 @@ function endGame(win) {
     if (!win) {
         const wrapper = document.querySelector(".board-wrapper");
         wrapper.classList.add("screen-shake");
-        setTimeout(() => wrapper.classList.remove("screen-shake"), 2500);
+        setTimeout(() => wrapper.classList.remove("screen-shake"), 3000);
 
         explodeUnflaggedMines();
         markWrongFlags();
     }
 
-    const delay = win ? 200 : mines * 80 + 800;
-
+    const delay = win ? 200 : mines * 100 + 1200;
     setTimeout(() => {
         alert(win ? "You won! 🎉" : "You lost! 💥");
         restartCurrentMode();
@@ -135,7 +169,7 @@ function explodeUnflaggedMines() {
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             const cell = board[i][j];
-            if (cell.mine && !cell.flag) {
+            if (cell.mine && !cell.flag && !cell.open) {
                 unflaggedMines.push(cell);
             }
         }
@@ -145,8 +179,8 @@ function explodeUnflaggedMines() {
     unflaggedMines.forEach((cell, index) => {
         setTimeout(() => {
             cell.el.innerText = "💣";
-            cell.el.classList.add("mine", "explode");
-        }, index * 80);
+            cell.el.classList.add("open", "mine", "explode");
+        }, index * 100);
     });
 }
 
@@ -155,6 +189,10 @@ function markWrongFlags() {
         for (let j = 0; j < cols; j++) {
             const cell = board[i][j];
             if (cell.flag && !cell.mine) {
+                if (cell.removeTimeout) {
+                    clearTimeout(cell.removeTimeout);
+                    delete cell.removeTimeout;
+                }
                 cell.flag = false;
                 cell.el.classList.remove("flag");
                 void cell.el.offsetWidth;
@@ -162,45 +200,4 @@ function markWrongFlags() {
             }
         }
     }
-}
-
-function floodOpen(startI, startJ) {
-    let queue = [{ i: startI, j: startJ }];
-    let delay = 0;
-    const stepDelay = 35;
-
-    while (queue.length > 0) {
-        const { i, j } = queue.shift();
-        const cell = board[i][j];
-
-        if (cell.open || cell.flag) continue;
-
-        setTimeout(() => {
-            cell.open = true;
-            cell.el.classList.add("open");
-
-            if (cell.count > 0) {
-                cell.el.innerText = cell.count;
-                cell.el.dataset.n = cell.count;
-            }
-        }, delay);
-
-        if (cell.count === 0) {
-            for (let x = -1; x <= 1; x++) {
-                for (let y = -1; y <= 1; y++) {
-                    let ni = i + x, nj = j + y;
-                    if (ni >= 0 && nj >= 0 && ni < rows && nj < cols) {
-                        const next = board[ni][nj];
-                        if (!next.open && !next.mine && !next.flag) {
-                            queue.push({ i: ni, j: nj });
-                        }
-                    }
-                }
-            }
-        }
-
-        delay += stepDelay;
-    }
-
-    setTimeout(checkWin, delay + 50);
 }

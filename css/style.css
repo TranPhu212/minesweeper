@@ -114,7 +114,6 @@ h1 {
     color: white;
 }
 
-/* ===== ANIMATION MỞ Ô: 3D FLIP + POP + MICRO-SHAKE ===== */
 .cell.open {
     animation: openCellFlip 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
@@ -124,17 +123,9 @@ h1 {
 }
 
 @keyframes openCellFlip {
-    0% {
-        transform: rotateX(90deg) scale(0.8) translateY(4px);
-        opacity: 0.7;
-    }
-    50% {
-        transform: rotateX(10deg) scale(1.05) translateY(-1px);
-        opacity: 1;
-    }
-    100% {
-        transform: rotateX(0deg) scale(1) translateY(0);
-    }
+    0% { transform: rotateX(90deg) scale(0.8) translateY(4px); opacity: 0.7; }
+    50% { transform: rotateX(10deg) scale(1.05) translateY(-1px); opacity: 1; }
+    100% { transform: rotateX(0deg) scale(1) translateY(0); }
 }
 
 @keyframes cellShakeLight {
@@ -144,7 +135,6 @@ h1 {
     75% { transform: translateX(-1px) translateY(-0.5px) rotate(-0.5deg); }
 }
 
-/* CẮM CỜ 3D */
 .cell.flag {
     background: transparent !important;
 }
@@ -157,19 +147,36 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     transform-origin: bottom center;
-    animation: plantFlag 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    animation: plantFlag 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both, flagWave 2s ease-in-out infinite 0.4s;
     z-index: 1;
 }
 
 @keyframes plantFlag {
-    0% { transform: translate(-50%, -50%) scale(0) rotateX(90deg) translateY(10px); opacity: 0; }
-    60% { transform: translate(-50%, -50%) scale(1.15) rotateX(10deg) translateY(-3px); opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(1) rotateX(0) translateY(0); }
+    0% { 
+        transform: translate(-50%, -50%) scale(0.1) rotateX(120deg) translateY(15px) rotateZ(-30deg); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.2) rotateX(20deg) translateY(-4px) rotateZ(10deg); 
+        opacity: 1; 
+    }
+    75% { 
+        transform: translate(-50%, -50%) scale(0.95) rotateX(5deg) translateY(1px) rotateZ(-2deg); 
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(1) rotateX(0) translateY(0) rotateZ(0); 
+    }
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: translate(-50%, -50%) rotateY(0deg); }
+    25% { transform: translate(-50%, -50%) rotateY(-5deg); }
+    75% { transform: translate(-50%, -50%) rotateY(5deg); }
 }
 
 /* GỠ CỜ 3D RƠI */
 .cell.flag-removing::before {
-    animation: flagDrop 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+    animation: flagDrop 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
 }
 
 @keyframes flagDrop {
@@ -212,25 +219,76 @@ h1 {
 }
 
 .cell.mine.explode {
-    animation: mineExplode 0.5s ease-out;
+    animation: mineShockwave 1.2s ease-out forwards;
+    position: relative;
+}
+
+.cell.mine.explode::after {
+    content: '💥';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    opacity: 0;
+    animation: particleBurst 0.8s 0.2s ease-out forwards;
+    z-index: 3;
+}
+
+@keyframes mineShockwave {
+    0% { 
+        transform: scale(1) rotate(0deg); 
+        box-shadow: 0 0 0 rgba(255,0,0,0); 
+        background: #f23607;
+    }
+    10% { 
+        transform: scale(2.0) rotate(15deg); 
+        box-shadow: 0 0 40px rgba(255,50,50,0.9); 
+        background: radial-gradient(circle, #ff4444, #cc0000);
+    }
+    20% { 
+        transform: scale(0.4) rotate(-10deg); 
+        box-shadow: 0 0 60px rgba(255,255,255,0.8); 
+        background: #fff;
+    }
+    45% { 
+        transform: scale(1.5) rotate(20deg); 
+        box-shadow: 0 0 30px rgba(0,0,0,0.7); 
+        background: #ff6600;
+    }
+    70% { 
+        transform: scale(0.8) rotate(-5deg); 
+        box-shadow: 0 0 20px rgba(255,0,0,0.5); 
+    }
+    100% { 
+        transform: scale(1) rotate(0deg); 
+        box-shadow: 0 0 10px rgba(255,0,0,0.3); 
+        background: #cc0000;
+    }
+}
+
+@keyframes particleBurst {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5) rotate(180deg); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2) rotate(360deg); }
 }
 
 /* RUNG MÀN HÌNH THUA */
-@keyframes screenShake {
-    0%,100% { transform: translate(0,0); }
-    10% { transform: translate(-4px,-4px); }
-    20% { transform: translate(4px,-3px); }
-    30% { transform: translate(-5px,4px); }
-    40% { transform: translate(5px,-3px); }
-    50% { transform: translate(-4px,5px); }
-    60% { transform: translate(4px,-3px); }
-    70% { transform: translate(-5px,4px); }
-    80% { transform: translate(3px,-4px); }
-    90% { transform: translate(-3px,3px); }
+@keyframes screenShakeGoogle {
+    0%, 100% { transform: translate(0,0); }
+    10% { transform: translate(-6px, -6px); }
+    20% { transform: translate(6px, -4px); }
+    30% { transform: translate(-7px, 6px); }
+    40% { transform: translate(7px, -5px); }
+    50% { transform: translate(-6px, 7px); }
+    60% { transform: translate(5px, -4px); }
+    70% { transform: translate(-7px, 6px); }
+    80% { transform: translate(4px, -6px); }
+    90% { transform: translate(-4px, 5px); }
 }
 
 .board-wrapper.screen-shake {
-    animation: screenShake 0.5s ease 5 both;
+    animation: screenShakeGoogle 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) 6 both;
 }
 
 /* Numbers */
