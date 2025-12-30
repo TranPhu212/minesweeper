@@ -6,14 +6,29 @@ function openCell(i, j) {
 
     if (firstClick) {
         firstClick = false;
+
+        // Start timer count up
         interval = setInterval(() => {
             timer++;
             document.getElementById("time").innerText = timer;
         }, 1000);
+
+        // Start countdown nếu bật và có timeLimit
+        if (timeLimit > 0) {
+            timeLeft = timeLimit;
+            document.getElementById("timeLeft").innerText = timeLeft;
+            intervalCountdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timeLeft").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame(false, true); // Time out lose
+                }
+            }, 1000);
+        }
+
         placeMines(i, j);
     }
 
-    // Mở ô click NGAY + anim flip/shake
     cell.open = true;
     cell.el.classList.add("open", "shake-light");
 
@@ -28,32 +43,28 @@ function openCell(i, j) {
         cell.el.innerText = cell.count;
         cell.el.dataset.n = cell.count;
     } else {
-        // WAVE LAN TỎA: Delay tăng dần từ tâm (ô click)
         waveFloodOpen(i, j);
     }
 
     checkWin();
 }
 
-// WAVE FLOOD OPEN: Lan tỏa từ từ với delay theo khoảng cách Manhattan (wave thật)
 function waveFloodOpen(startI, startJ) {
     const queue = [];
     const visited = new Set();
-    const startKey = `${startI},${startJ}`;
 
     queue.push({i: startI, j: startJ, dist: 0});
-    visited.add(startKey);
+    visited.add(`${startI},${startJ}`);
 
     let delay = 0;
-    const baseDelay = 20;  // Tốc độ wave (20ms/ô → mượt, điều chỉnh nếu muốn nhanh/chậm)
+    const baseDelay = 20;
 
     while (queue.length > 0) {
-        const {i, j, dist} = queue.shift();
+        const {i, j} = queue.shift();
         const cell = board[i][j];
 
-        // Mở ô với delay theo khoảng cách (wave lan ra)
         setTimeout(() => {
-            if (cell.open) return;  // Đề phòng overlap
+            if (cell.open) return;
             cell.open = true;
             cell.el.classList.add("open", "shake-light");
 
@@ -63,19 +74,17 @@ function waveFloodOpen(startI, startJ) {
             }
         }, delay);
 
-        // Thêm lân cận nếu ô 0
         if (cell.count === 0) {
             for (let x = -1; x <= 1; x++) {
                 for (let y = -1; y <= 1; y++) {
                     if (x === 0 && y === 0) continue;
                     const ni = i + x;
                     const nj = j + y;
-                    const nKey = `${ni},${nj}`;
-
-                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols &&
-                        !visited.has(nKey) && !board[ni][nj].flag && !board[ni][nj].mine) {
-                        visited.add(nKey);
-                        queue.push({i: ni, j: nj, dist: dist + 1});
+                    const key = `${ni},${nj}`;
+                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && !visited.has(key) &&
+                        !board[ni][nj].flag && !board[ni][nj].mine) {
+                        visited.add(key);
+                        queue.push({i: ni, j: nj});
                     }
                 }
             }
@@ -132,9 +141,10 @@ function toggleFlag(i, j) {
     document.getElementById("flags").innerText = flagsLeft;
 }
 
-function endGame(win) {
+function endGame(win, timeOut = false) {
     gameOver = true;
     clearInterval(interval);
+    if (intervalCountdown) clearInterval(intervalCountdown);
 
     if (!win) {
         const wrapper = document.querySelector(".board-wrapper");
@@ -147,7 +157,11 @@ function endGame(win) {
 
     const delay = win ? 200 : mines * 100 + 1200;
     setTimeout(() => {
-        alert(win ? "You won! 🎉" : "You lost! 💥");
+        if (timeOut) {
+            alert("Time out! Bạn đã thua! 💥");
+        } else {
+            alert(win ? "Bạn thắng! 🎉" : "Bạn thua! 💥");
+        }
         restartCurrentMode();
     }, delay);
 }
