@@ -1,56 +1,54 @@
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
-        text-align: center;
-        margin: 0;
-        padding: 20px;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
 
-    h1 {
-        color: #2c3e50;
-    }
+h1 {
+    color: #2c3e50;
+}
 
-    .controls button {
-        padding: 10px 16px;
-        margin: 5px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        background: #3498db;
-        color: white;
-        font-size: 14px;
-    }
+.controls button {
+    padding: 10px 16px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #3498db;
+    color: white;
+    font-size: 14px;
+}
 
-    .controls button:hover {
-        background: #2980b9;
-    }
+.controls button:hover {
+    background: #2980b9;
+}
 
-    .top-panel {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 50px;
-        margin-top: 15px;
-        font-size: 24px;
-        font-weight: bold;
-    }
+.top-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+}
 
-    .top-panel select {
-        padding: 10px 18px;
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-        background: #3498db;
-        color: white;
-        cursor: pointer;
-    }
+.top-panel select {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+}
 
-    .top-panel select option {
-        color: black;
-    }
+.top-panel select option {
+    color: black;
+}
 
-
-/* ===== KHUNG GAME ===== */
 .board-wrapper {
     max-width: 900px;
     max-height: 900px;
@@ -66,38 +64,37 @@
     align-items: center;
 }
 
+#board {
+    perspective: 800px;
+    display: grid;
+    gap: 2px;
+}
 
-    #board {
-        perspective: 800px;
-        display: grid;
-        gap: 2px;
-    }
+.cell {
+    background: #a8e6cf;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: transform 0.1s ease, filter 0.2s ease;
+    transform-style: preserve-3d;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    position: relative;
+}
 
-    .cell {
-        background: #a8e6cf;
-        border-radius: 0;
-        cursor: pointer;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        user-select: none;
-        transition: transform 0.1s ease;
-        transform-style: preserve-3d;
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
-        aspect-ratio: 1 / 1;
-    }
-
-    .cell:active {
-        transform: scale(0.95);
-    }
+.cell:active {
+    transform: scale(0.95);
+}
 
 .cell.light {
-    background-color: #aad751;
+    background-color: #66f779;
 }
 
 .cell.dark {
-    background-color: #a2d149;
+    background-color: #36d541;
 }
 
 .cell.open.light {
@@ -117,89 +114,126 @@
     color: white;
 }
 
-.cell.flag {
-    background: transparent;
-    animation: flag-pop 0.15s ease-out;
-    transform-origin: bottom center;
+/* ===== ANIMATION MỞ Ô: 3D FLIP + POP + MICRO-SHAKE ===== */
+.cell.open {
+    animation: openCellFlip 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-.cell.flag {
-    background: transparent;
-    animation: flag-pop 0.15s ease-out;
-    transform-origin: bottom center;
+.cell.open.shake-light {
+    animation: cellShakeLight 0.15s ease-in-out both;
 }
 
-@keyframes flag-pop {
+@keyframes openCellFlip {
     0% {
-        transform: scale(0.6);
-        opacity: 0;
+        transform: rotateX(90deg) scale(0.8) translateY(4px);
+        opacity: 0.7;
     }
-    80% {
-        transform: scale(1.05);
+    50% {
+        transform: rotateX(10deg) scale(1.05) translateY(-1px);
         opacity: 1;
     }
     100% {
-        transform: scale(1);
+        transform: rotateX(0deg) scale(1) translateY(0);
     }
 }
 
-.cell.flag-removing {
-    animation: flag-fade 0.12s ease-in;
+@keyframes cellShakeLight {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    25% { transform: translateX(-1.5px) translateY(-1px) rotate(-1deg); }
+    50% { transform: translateX(1.5px) translateY(1px) rotate(1deg); }
+    75% { transform: translateX(-1px) translateY(-0.5px) rotate(-0.5deg); }
 }
 
-@keyframes flag-fade {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+/* CẮM CỜ 3D */
+.cell.flag {
+    background: transparent !important;
 }
 
+.cell.flag::before {
+    content: '🚩';
+    font-size: 1.4em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: bottom center;
+    animation: plantFlag 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    z-index: 1;
+}
 
-    .cell.flag {
-        animation: flagIn 0.25s ease-out;
-    }
+@keyframes plantFlag {
+    0% { transform: translate(-50%, -50%) scale(0) rotateX(90deg) translateY(10px); opacity: 0; }
+    60% { transform: translate(-50%, -50%) scale(1.15) rotateX(10deg) translateY(-3px); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1) rotateX(0) translateY(0); }
+}
 
-    .cell.flag-removing {
-        animation: flagOut 0.18s ease-in;
-    }
-    
-    @media (max-width: 600px) {
-        .top-panel {
-            font-size: 16px;
-            gap: 20px;
-        }
+/* GỠ CỜ 3D RƠI */
+.cell.flag-removing::before {
+    animation: flagDrop 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
 
-        .top-panel select {
-            padding: 6px 10px;
-            font-size: 14px;
-        }
+@keyframes flagDrop {
+    0% { transform: translate(-50%, -50%) rotateX(0) translateY(0); opacity: 1; }
+    50% { transform: translate(-50%, -50%) rotateX(-45deg) translateY(5px) scale(0.9); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) rotateX(-90deg) translateY(15px) scale(0.7); opacity: 0; }
+}
 
-        body {
-            padding: 10px;
-        }
-    }
+/* FLAG SAI */
+.cell.wrong-flag {
+    background: linear-gradient(135deg, #ff5252, #d50000) !important;
+    box-shadow: 0 0 20px rgba(255,0,0,0.7);
+}
 
+.cell.wrong-flag::before {
+    content: '❌';
+    font-size: 1.8em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: wrongShake 0.6s ease both;
+    z-index: 2;
+}
+
+@keyframes wrongShake {
+    0% { transform: translate(-50%, -50%) scale(0.2) rotate(-180deg); opacity: 0; }
+    30% { transform: translate(-50%, -50%) scale(1.3) rotate(15deg); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(0.9) rotate(-10deg); }
+    70% { transform: translate(-50%, -50%) scale(1.1) rotate(8deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0); }
+}
+
+/* MÌN NỔ */
 @keyframes mineExplode {
-    0% {
-        transform: scale(1) rotate(0deg);
-        box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-    30% {
-        transform: scale(1.3) rotate(10deg);
-        box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
-    }
-    60% {
-        transform: scale(0.9) rotate(-8deg);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 60px rgba(231, 76, 60, 0.6);
-    }
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(231,76,60,0); }
+    30% { transform: scale(1.4) rotate(15deg); box-shadow: 0 0 40px rgba(231,76,60,0.9); }
+    60% { transform: scale(0.9) rotate(-10deg); }
+    100% { transform: scale(1); box-shadow: 0 0 60px rgba(231,76,60,0.7); }
 }
 
 .cell.mine.explode {
-    animation: mineExplode 0.45s ease-out;
+    animation: mineExplode 0.5s ease-out;
 }
 
+/* RUNG MÀN HÌNH THUA */
+@keyframes screenShake {
+    0%,100% { transform: translate(0,0); }
+    10% { transform: translate(-4px,-4px); }
+    20% { transform: translate(4px,-3px); }
+    30% { transform: translate(-5px,4px); }
+    40% { transform: translate(5px,-3px); }
+    50% { transform: translate(-4px,5px); }
+    60% { transform: translate(4px,-3px); }
+    70% { transform: translate(-5px,4px); }
+    80% { transform: translate(3px,-4px); }
+    90% { transform: translate(-3px,3px); }
+}
 
+.board-wrapper.screen-shake {
+    animation: screenShake 0.5s ease 5 both;
+}
+
+/* Numbers */
 .cell.open[data-n="1"] { color: #1976d2; }
 .cell.open[data-n="2"] { color: #388e3c; }
 .cell.open[data-n="3"] { color: #d32f2f; }
@@ -208,3 +242,9 @@
 .cell.open[data-n="6"] { color: #00838f; }
 .cell.open[data-n="7"] { color: #424242; }
 .cell.open[data-n="8"] { color: #000000; }
+
+@media (max-width: 600px) {
+    .top-panel { font-size: 16px; gap: 20px; }
+    .top-panel select { padding: 6px 10px; font-size: 14px; }
+    body { padding: 10px; }
+}
