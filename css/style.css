@@ -31,15 +31,15 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;  /* Giảm gap cho fit thêm selects */
+    gap: 20px;
     margin-top: 15px;
-    font-size: 20px;  /* Nhỏ hơn chút */
+    font-size: 20px;
     font-weight: bold;
-    flex-wrap: wrap;  /* Wrap nếu mobile */
+    flex-wrap: wrap;
 }
 
 .top-panel select {
-    padding: 8px 12px;  /* Nhỏ hơn */
+    padding: 8px 12px;
     border-radius: 8px;
     border: none;
     font-size: 14px;
@@ -89,7 +89,6 @@ h1 {
     transform-style: preserve-3d;
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
     position: relative;
-    text-align: center;
 }
 
 .cell:active {
@@ -218,30 +217,31 @@ h1 {
     100% { transform: scale(1); box-shadow: 0 0 60px rgba(231,76,60,0.7); }
 }
 
+.cell.mine.explode {
+    animation: mineExplode 0.5s ease-out;
+}
+
+.cell.mine.explode::after {
+    content: '💣';
+    font-size: 1.8em;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
 
 /* RUNG MÀN HÌNH THUA */
 @keyframes screenShake {
-    0%,100% { transform: translate(0,0); }
+    0%, 100% { transform: translate(0,0); }
     10% { transform: translate(-4px,-4px); }
     20% { transform: translate(4px,-3px); }
     30% { transform: translate(-5px,4px); }
     40% { transform: translate(5px,-3px); }
-    50% { transform: scale(0.9) rotate(-10deg); }
-    100% { transform: scale(1); box-shadow: 0 0 60px rgba(231,76,60,0.6); }
-}
-
-/* ===== RUNG MÀN HÌNH KHI THUA ===== */
-@keyframes screenShake {
-    0%, 100% { transform: translateX(0) translateY(0); }
-    10% { transform: translateX(-3px) translateY(-3px); }
-    20% { transform: translateX(3px) translateY(-2px); }
-    30% { transform: translateX(-4px) translateY(3px); }
-    40% { transform: translateX(4px) translateY(-2px); }
-    50% { transform: translateX(-3px) translateY(4px); }
-    60% { transform: translateX(3px) translateY(-2px); }
-    70% { transform: translateX(-4px) translateY(3px); }
-    80% { transform: translateX(2px) translateY(-3px); }
-    90% { transform: translateX(-2px) translateY(2px); }
+    50% { transform: translate(-4px,5px); }
+    60% { transform: translate(4px,-3px); }
+    70% { transform: translate(-5px,4px); }
+    80% { transform: translate(3px,-4px); }
+    90% { transform: translate(-3px,3px); }
 }
 
 .board-wrapper.screen-shake {
@@ -261,7 +261,7 @@ h1 {
 @media (max-width: 600px) {
     .top-panel {
         font-size: 16px;
-        gap: 10px;  /* Giảm gap cho mobile */
+        gap: 10px;
     }
 
     .top-panel select {
@@ -274,22 +274,7 @@ h1 {
     }
 }
 
-#countdownPanel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-@media (max-width: 600px) {
-    #countdownPanel {
-        font-size: 16px;
-        flex-direction: column;
-        gap: 5px;
-    }
-}
-
+/* MOBILE BUBBLES */
 .bubble {
     position: fixed;
     width: 60px;
@@ -298,8 +283,8 @@ h1 {
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     display: flex;
-    align-items: center !important;
-    justify-content: center !important;
+    align-items: center;
+    justify-content: center;
     font-size: 36px;
     cursor: pointer;
     user-select: none;
@@ -339,12 +324,13 @@ h1 {
     pointer-events: auto;
 }
 
+/* Chỉ hiện bubbles trên mobile */
 .bubble, .bubble-overlay {
-    display: none; /* Ẩn mặc định */
+    display: none;
 }
 
 @media (pointer: coarse) {
-    .bubble, .bubble-overlay {  
+    .bubble, .bubble-overlay {
         display: block;
     }
     .bubble {
@@ -354,40 +340,19 @@ h1 {
     }
 }
 
-/* SỬA ICON CHUẨN (nếu chưa có) */
-.cell.flag::before {
-    content: '🚩';
-}
-
-.cell.mine.explode {
-    animation: mineExplode 0.5s ease-out;
-}
-
-.cell.mine.explode::after {
-    content: '💣';  /* Thay "Mine" */
-    font-size: 1.8em;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-}
-
-.cell.wrong-flag::before {
-    content: '❌';  /* Sửa từ 'Cross' */
-}
-
+/* FLOATING ZOOM BUTTON - GÓC PHẢI DƯỚI, FIXED THEO MÀN HÌNH */
 .fab {
     position: fixed !important;
-    top: 20px !important;
+    bottom: 20px !important;
     right: 20px !important;
     width: 60px !important;
-    height: 60px;
+    height: 60px !important;
     border-radius: 50%;
     background: #3498db;
     color: white;
     font-size: 32px;
     border: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     cursor: pointer;
     z-index: 2147483647 !important;
     display: none;
@@ -405,17 +370,7 @@ h1 {
     background: #2980b9;
 }
 
-body, html {
-    overflow: visible !important;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-.zoom-active .board-wrapper {
-    pointer-events: none;
-}
-
+/* Chỉ hiện nút zoom trên mobile */
 @media (pointer: coarse) {
     .fab {
         display: flex !important;
@@ -426,4 +381,14 @@ body, html {
     .fab {
         display: none !important;
     }
+}
+
+/* Đảm bảo không bị clip khi zoom */
+body, html, .board-wrapper {
+    overflow: visible !important;
+}
+
+/* Khóa board khi zoom active */
+.zoom-active .board-wrapper {
+    pointer-events: none;
 }
