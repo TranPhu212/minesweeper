@@ -123,7 +123,7 @@ function showMobileOptions(i, j, touch) {
     const rect = board[i][j].el.getBoundingClientRect();
     const cellSize = rect.width;
     const gap = 2;
-    const offset = cellSize + gap + 20;
+    const offset = cellSize + gap + 15;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 

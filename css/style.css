@@ -67,7 +67,7 @@ h1 {
     align-items: center;
     transition: pointer-events 0.2s ease;
     overflow: visible !important;
-    position: relative;
+    position: relative !important;
 }
 
 #board {
@@ -378,7 +378,7 @@ h1 {
 
 .fab {
     position: fixed !important;
-    bottom: 20px !important;
+    top: 20px !important;
     right: 20px !important;
     width: 60;
     height: 60px;
@@ -403,6 +403,13 @@ h1 {
 
 .fab:hover {
     background: #2980b9;
+}
+
+body, html {
+    overflow: visible !important;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .zoom-active .board-wrapper {
