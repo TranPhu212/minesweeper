@@ -337,7 +337,7 @@ h1 {
     right: 20px !important;
     width: 70px !important;
     height: 70px !important;
-    border-radius: 50%;
+    border-radius: 15px !important;
     background: #3498db;
     color: white;
     font-size: 36px;

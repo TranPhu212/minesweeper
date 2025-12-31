@@ -14,11 +14,9 @@ function countFlaggedNeighbors(i, j) {
 
 function openCell(i, j) {
     if (gameOver) return;
-
     const cell = board[i][j];
     if (cell.open && cell.count > 0) {
-        const flaggedNeighbors = countFlaggedNeighbors(i, j);
-        if (flaggedNeighbors === cell.count) {
+        if (countFlaggedNeighbors(i, j) === cell.count) {
             for (let dx = -1; dx <= 1; dx++) {
                 for (let dy = -1; dy <= 1; dy++) {
                     const ni = i + dx;
@@ -26,7 +24,7 @@ function openCell(i, j) {
                     if (ni >= 0 && ni < rows && nj >= 0 && nj < cols) {
                         const neighbor = board[ni][nj];
                         if (!neighbor.open && !neighbor.flag) {
-                            openCell(ni, nj);
+                            openCell(ni, nj); // Recursive an toàn
                         }
                     }
                 }
@@ -35,15 +33,12 @@ function openCell(i, j) {
         }
     }
     if (cell.open || cell.flag) return;
-
     if (firstClick) {
         firstClick = false;
-
         interval = setInterval(() => {
             timer++;
             updateTimeDisplay();
         }, 1000);
-
         if (timeLimit > 0) {
             timeLeft = timeLimit;
             updateTimeDisplay();
@@ -55,7 +50,6 @@ function openCell(i, j) {
                 }
             }, 1000);
         }
-
         placeMines(i, j);
     }
 
@@ -120,16 +114,13 @@ function waveFloodOpen(startI, startJ) {
                 }
             }
         }
-
         delay += baseDelay;
     }
-
     setTimeout(checkWin, delay + 50);
 }
 
 function toggleFlag(i, j) {
     if (gameOver) return;
-
     const cell = board[i][j];
     if (cell.open) return;
     if (cell.el.classList.contains("flag-removing")) {
@@ -167,7 +158,6 @@ function toggleFlag(i, j) {
         }, 250);
         flagsLeft++;
     }
-
     document.getElementById("flags").innerText = flagsLeft;
 }
 

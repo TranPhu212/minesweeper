@@ -17,6 +17,12 @@ function changeMode() {
     });
     minesSelect.value = minesOptions[minesOptions.length - 1];
     updateTimeOptions();
+    const checkbox = document.getElementById("countdownCheckbox");
+    if (checkbox.checked) {
+        const maxMin = timeOptions[timeOptions.length - 1];
+        timeLimit = maxMin * 60;
+        timeLeft = timeLimit;
+    }
     restartGameWithCurrentSettings();
 }
 
@@ -62,5 +68,14 @@ document.getElementById("timeLimitSelect").addEventListener("change", restartGam
 document.getElementById("countdownCheckbox").addEventListener("change", function() {
     const select = document.getElementById("timeLimitSelect");
     select.style.display = this.checked ? "inline-block" : "none";
+    
+    if (this.checked) {
+        const maxMin = timeOptions[timeOptions.length - 1];
+        timeLimit = maxMin * 60;
+        timeLeft = timeLimit;
+    } else {
+        timeLimit = 0;
+    }
+    updateTimeDisplay();
     restartGameWithCurrentSettings();
 });

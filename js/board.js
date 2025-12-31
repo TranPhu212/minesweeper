@@ -118,13 +118,10 @@ function startGame(r, c, m) {
                 clientX = e.clientX;
                 clientY = e.clientY;
             }
-
             currentX = clientX - initialX;
             currentY = clientY - initialY;
-
             xOffset = currentX;
             yOffset = currentY;
-
             zoomBtn.style.transform = `translate(${currentX}px, ${currentY}px)`;
         }
     }
@@ -220,7 +217,8 @@ function placeMines(safeRow, safeCol) {
         let r = Math.floor(Math.random() * rows);
         let c = Math.floor(Math.random() * cols);
 
-        if (Math.abs(r - safeRow) <= 1 && Math.abs(c - safeCol) <= 1) continue;
+        const avoidRadius = (currentMode === "hard" || currentMode === "extreme") ? 1 : 2;
+        if (Math.abs(r - safeRow) <= avoidRadius && Math.abs(c - safeCol) <= avoidRadius) continue;
 
         if (!board[r][c].mine) {
             board[r][c].mine = true;
