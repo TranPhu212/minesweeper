@@ -191,7 +191,6 @@ function endGame(win, timeOut = false) {
 
         explodeUnflaggedMines();
 
-        // NEW: Tính số unflaggedMines để chờ nổ hết
         let unflaggedCount = 0;
         for (let a = 0; a < rows; a++) {
             for (let b = 0; b < cols; b++) {
@@ -201,12 +200,11 @@ function endGame(win, timeOut = false) {
             }
         }
 
-        // Delay markWrongFlags sau khi bom nổ hết (200ms * count + buffer 500ms)
         const explodeTotalTime = unflaggedCount * 200 + 500;
         setTimeout(markWrongFlags, explodeTotalTime);
     }
 
-    const delay = win ? 200 : mines * 200 + 1200; // Delay dài hơn cho bom chậm
+    const delay = win ? 200 : mines * 200 + 1200;
     setTimeout(() => {
         if (timeOut) {
             alert("Time out! Bạn đã thua! 💥");

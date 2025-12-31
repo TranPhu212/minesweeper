@@ -1,7 +1,6 @@
 function changeMode() {
     currentMode = document.getElementById("modeSelect").value;
 
-    // Update mines options
     const minesSelect = document.getElementById("minesSelect");
     minesSelect.innerHTML = '';
     let minesOptions = [];
@@ -17,11 +16,7 @@ function changeMode() {
         minesSelect.add(opt);
     });
     minesSelect.value = minesOptions[minesOptions.length - 1];
-
-    // Update time options
     updateTimeOptions();
-
-    // Reset game với mines mặc định max
     restartGameWithCurrentSettings();
 }
 
@@ -54,19 +49,16 @@ function restartCurrentMode() {
     restartGameWithCurrentSettings();
 }
 
-// Hàm chung reset game với settings hiện tại
 function restartGameWithCurrentSettings() {
     const [r, c] = getRowsCols();
     const m = parseInt(document.getElementById("minesSelect").value);
     startGame(r, c, m);
 }
 
-// NEW: Reset khi thay đổi mines hoặc time
 document.getElementById("minesSelect").addEventListener("change", restartGameWithCurrentSettings);
 
 document.getElementById("timeLimitSelect").addEventListener("change", restartGameWithCurrentSettings);
 
-// Toggle countdown panel + reset game
 document.getElementById("countdownCheckbox").addEventListener("change", function() {
     const select = document.getElementById("timeLimitSelect");
     select.style.display = this.checked ? "inline-block" : "none";

@@ -61,21 +61,17 @@ function startGame(r, c, m) {
             cell.style.width = cellSize + "px";
             cell.style.height = cellSize + "px";
 
-            // Desktop
             cell.onclick = () => openCell(i, j);
             cell.oncontextmenu = e => {
                 e.preventDefault();
                 toggleFlag(i, j);
             };
 
-            // Mobile touch
             cell.addEventListener("touchstart", (e) => {
                 e.preventDefault();
                 if (firstClick) {
-                    // First tap: Mở luôn (đào)
                     openCell(i, j);
                 } else {
-                    // Từ lần 2: Sổ bubbles
                     showMobileOptions(i, j, e.touches[0]);
                 }
             });
@@ -100,18 +96,17 @@ function startGame(r, c, m) {
     };
 }
 
-// MOBILE BUBBLES
 let flagBubble, digBubble, overlay;
 
 function showMobileOptions(i, j, touch) {
     if (!flagBubble) {
         flagBubble = document.createElement("div");
-        flagBubble.innerHTML = "🚩";  // Cờ đỏ chuẩn
+        flagBubble.innerHTML = "🚩";
         flagBubble.classList.add("bubble", "bubble-flag");
         document.body.appendChild(flagBubble);
 
         digBubble = document.createElement("div");
-        digBubble.innerHTML = "🪏";  // Xẻng đào chuẩn (shovel)
+        digBubble.innerHTML = "🪏";
         digBubble.classList.add("bubble", "bubble-dig");
         document.body.appendChild(digBubble);
 
@@ -137,14 +132,13 @@ function showMobileOptions(i, j, touch) {
         hideMobileOptions();
     };
 
-    // Trên: Đào ⛏️
     digBubble.style.left = `${centerX - 30}px`;
     digBubble.style.top = `${rect.top - offset}px`;
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {
         e.stopPropagation();
-        openCell(i, j);  // Trigger Chord nếu ô số
+        openCell(i, j);
         hideMobileOptions();
     };
 

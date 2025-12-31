@@ -120,7 +120,6 @@ h1 {
     color: white;
 }
 
-/* ANIMATION MỞ Ô: 3D FLIP + MICRO-SHAKE */
 .cell.open {
     animation: openCellFlip 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
@@ -150,7 +149,6 @@ h1 {
     75% { transform: translateX(-1px) translateY(-0.5px) rotate(-0.5deg); }
 }
 
-/* CẮM CỜ 3D */
 .cell.flag {
     background: transparent !important;
 }
@@ -173,7 +171,6 @@ h1 {
     100% { transform: translate(-50%, -50%) scale(1) rotateX(0) translateY(0); }
 }
 
-/* GỠ CỜ 3D RƠI */
 .cell.flag-removing::before {
     animation: flagDrop 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
 }
@@ -184,7 +181,6 @@ h1 {
     100% { transform: translate(-50%, -50%) rotateX(-90deg) translateY(15px) scale(0.7); opacity: 0; }
 }
 
-/* FLAG SAI */
 .cell.wrong-flag {
     background: linear-gradient(135deg, #ff5252, #d50000) !important;
     box-shadow: 0 0 20px rgba(255,0,0,0.7);
@@ -209,7 +205,6 @@ h1 {
     100% { transform: translate(-50%, -50%) scale(1) rotate(0); }
 }
 
-/* MÌN NỔ */
 @keyframes mineExplode {
     0% { transform: scale(1); box-shadow: 0 0 0 rgba(231,76,60,0); }
     30% { transform: scale(1.4) rotate(15deg); box-shadow: 0 0 40px rgba(231,76,60,0.9); }
@@ -230,7 +225,6 @@ h1 {
     z-index: 2;
 }
 
-/* RUNG MÀN HÌNH THUA */
 @keyframes screenShake {
     0%, 100% { transform: translate(0,0); }
     10% { transform: translate(-4px,-4px); }
@@ -248,7 +242,6 @@ h1 {
     animation: screenShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) 5 both;
 }
 
-/* Numbers */
 .cell.open[data-n="1"] { color: #1976d2; }
 .cell.open[data-n="2"] { color: #388e3c; }
 .cell.open[data-n="3"] { color: #d32f2f; }
@@ -274,7 +267,6 @@ h1 {
     }
 }
 
-/* MOBILE BUBBLES */
 .bubble {
     position: fixed;
     width: 60px;
@@ -324,7 +316,6 @@ h1 {
     pointer-events: auto;
 }
 
-/* Chỉ hiện bubbles trên mobile */
 .bubble, .bubble-overlay {
     display: none;
 }
@@ -340,13 +331,12 @@ h1 {
     }
 }
 
-/* FLOATING ZOOM BUTTON - GÓC PHẢI DƯỚI, FIXED THEO MÀN HÌNH */
 .fab {
     position: fixed !important;
     top: 20px !important;
     right: 20px !important;
-    width: 60px !important;
-    height: 60px !important;
+    width: 80px !important;
+    height: 80px !important;
     border-radius: 50%;
     background: #3498db;
     color: white;
@@ -370,7 +360,6 @@ h1 {
     background: #2980b9;
 }
 
-/* Chỉ hiện nút zoom trên mobile */
 @media (pointer: coarse) {
     .fab {
         display: flex !important;
@@ -383,12 +372,10 @@ h1 {
     }
 }
 
-/* Đảm bảo không bị clip khi zoom */
 body, html, .board-wrapper {
     overflow: visible !important;
 }
 
-/* Khóa board khi zoom active */
 .zoom-active .board-wrapper {
     pointer-events: none;
 }
