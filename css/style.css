@@ -212,9 +212,6 @@ h1 {
     100% { transform: scale(1); box-shadow: 0 0 60px rgba(231,76,60,0.7); }
 }
 
-.cell.mine.explode {
-    animation: mineExplode 0.5s ease-out;
-}
 
 /* RUNG MÀN HÌNH THUA */
 @keyframes screenShake {
@@ -225,10 +222,6 @@ h1 {
     40% { transform: translate(5px,-3px); }
     50% { transform: scale(0.9) rotate(-10deg); }
     100% { transform: scale(1); box-shadow: 0 0 60px rgba(231,76,60,0.6); }
-}
-
-.cell.mine.explode {
-    animation: mineExplode 0.45s ease-out;
 }
 
 /* ===== RUNG MÀN HÌNH KHI THUA ===== */
@@ -340,9 +333,18 @@ h1 {
     pointer-events: auto;
 }
 
-/* Chỉ hiện trên mobile (touch device) */
+.bubble, .bubble-overlay {
+    display: none; /* Ẩn mặc định */
+}
+
 @media (pointer: coarse) {
-    .bubble, .bubble-overlay {
+    .bubble, .bubble-overlay {  
+        display: block;
+    }
+    .bubble {
+        width: 70px;
+        height: 70px;
+        font-size: 38px;
     }
 }
 
@@ -352,7 +354,7 @@ h1 {
 }
 
 .cell.mine.explode {
-    /* Thêm 💣 nếu cần, nhưng class explode đã có */
+    animation: mineExplode 0.5s ease-out;
 }
 
 .cell.mine.explode::after {
