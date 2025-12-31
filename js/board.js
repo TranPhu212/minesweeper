@@ -169,14 +169,12 @@ function showMobileOptions(i, j, touch) {
     }
 
     const rect = board[i][j].el.getBoundingClientRect();
-    const cellSize = rect.width;
-    const gap = 2;
-    const offset = cellSize + gap + 15;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
+    const fixedOffset = 70;
 
-    flagBubble.style.left = `${rect.left - offset}px`;
-    flagBubble.style.top = `${centerY - 30}px`;
+    flagBubble.style.left = `${centerX - fixedOffset - 30}px`;
+    flagBubble.style.top = `${centerY - 27.5}px`;
     flagBubble.style.display = "block";
     flagBubble.classList.add("show");
     flagBubble.onclick = (e) => {
@@ -185,8 +183,8 @@ function showMobileOptions(i, j, touch) {
         hideMobileOptions();
     };
 
-    digBubble.style.left = `${centerX - 30}px`;
-    digBubble.style.top = `${rect.top - offset}px`;
+    digBubble.style.left = `${centerX - 27.5}px`;
+    digBubble.style.top = `${centerY - fixedOffset - 30}px`;
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {
