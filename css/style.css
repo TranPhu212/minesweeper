@@ -4,10 +4,11 @@ body {
     text-align: center;
     margin: 0;
     padding: 20px;
+    position: relative; /* Cho zoom btn fixed */
 }
 
-h1 {
-    color: #2c3e50;
+h1 { 
+    color: #2c3e50; 
 }
 
 .controls button {
@@ -63,6 +64,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: pointer-events 0.2s ease;
 }
 
 #board {

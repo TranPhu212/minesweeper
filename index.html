@@ -7,21 +7,17 @@
 </head>
 
 <body>
-
 <div class="top-panel">
     <div>🚩 <span id="flags">20</span></div>
-    <div>⏱️ <span id="time">0</span>s</div>
+    <div>⏱️ <span id="time">--</span>s</div>  <!-- Chung count up/countdown -->
 
-    <!-- NEW: Checkbox bật đếm ngược -->
+    <!-- Checkbox + select time (no timeLeft display) -->
     <label>
         <input type="checkbox" id="countdownCheckbox"> Bật đếm ngược
     </label>
-
-    <!-- NEW: Chỉ hiển thị khi checkbox tick -->
     <div id="countdownPanel" style="display: none;">
-        <div>⏳ Left: <span id="timeLeft">--</span>s</div>
         <select id="timeLimitSelect">
-            <!-- Options by JS -->
+            <!-- JS fill -->
         </select>
     </div>
 
@@ -31,9 +27,8 @@
         <option value="hard">Khó</option>
         <option value="extreme">Siêu khó</option>
     </select>
-
     <select id="minesSelect">
-        <!-- Options by JS -->
+        <!-- JS fill -->
     </select>
 </div>
 
@@ -41,11 +36,13 @@
     <div id="board"></div>
 </div>
 
+<!-- ZOOM BTN fixed bottom-left -->
+<button id="zoomBtn" class="zoom-btn">🔍</button>
+
 <script src="js/config.js"></script>
 <script src="js/board.js"></script>
 <script src="js/game.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>
-
 </body>
 </html>
