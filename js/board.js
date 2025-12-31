@@ -100,12 +100,12 @@ let flagBubble, digBubble, overlay;
 function showMobileOptions(i, j, touch) {
     if (!flagBubble) {
         flagBubble = document.createElement("div");
-        flagBubble.innerHTML = "🚩";  // Icon cờ giống desktop
+        flagBubble.innerHTML = "🚩";  // Cờ đỏ chuẩn
         flagBubble.classList.add("bubble", "bubble-flag");
         document.body.appendChild(flagBubble);
 
         digBubble = document.createElement("div");
-        digBubble.innerHTML = "🛠";  // Xẻng (shovel), không phải cúp
+        digBubble.innerHTML = "🪏";  // Cuốc/xẻng đào mỏ chuẩn (pickaxe)
         digBubble.classList.add("bubble", "bubble-dig");
         document.body.appendChild(digBubble);
 
@@ -115,12 +115,15 @@ function showMobileOptions(i, j, touch) {
     }
 
     const rect = board[i][j].el.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const cellSize = rect.width;
 
-    // Bên trái: Cờ 🚩
-    flagBubble.style.left = `${centerX - rect.width - 20}px`;
-    flagBubble.style.top = `${centerY - 25}px`;
+    // Tính vị trí TRÀN RA NGOÀI ô
+    const centerX = rect.left + cellSize / 2;
+    const centerY = rect.top + cellSize / 2;
+
+    // Bên TRÁI: Cờ 🚩 (tràn ra trái)
+    flagBubble.style.left = `${rect.left - 70}px`;  // Tràn ra trái 70px
+    flagBubble.style.top = `${centerY - 30}px`;     // Giữa chiều dọc
     flagBubble.style.display = "block";
     flagBubble.classList.add("show");
     flagBubble.onclick = (e) => {
@@ -129,9 +132,9 @@ function showMobileOptions(i, j, touch) {
         hideMobileOptions();
     };
 
-    // Phía trên: Đào 🛠
-    digBubble.style.left = `${centerX - 25}px`;
-    digBubble.style.top = `${centerY - rect.height - 20}px`;
+    // Phía TRÊN: Đào ⛏️ (tràn lên trên)
+    digBubble.style.left = `${centerX - 30}px`;     // Giữa chiều ngang
+    digBubble.style.top = `${rect.top - 70}px`;     // Tràn lên trên 70px
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {

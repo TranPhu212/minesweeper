@@ -102,47 +102,47 @@ function toggleFlag(i, j) {
     const cell = board[i][j];
     if (cell.open) return;
 
-    // ANTI-SPAM HOÀN HẢO: Không tăng dư flagsLeft
-    // Nếu đang anim gỡ → force hoàn thành ngay, ++ flagsLeft (vì chưa ++ trước đó)
+    // ANTI-SPAM + SYNC CHÍNH XÁC: flagsLeft luôn đúng
     if (cell.el.classList.contains("flag-removing")) {
+        // Đang anim gỡ → force hoàn thành
         if (cell.removeTimeout) clearTimeout(cell.removeTimeout);
         cell.flag = false;
         cell.el.innerText = "";
         cell.el.classList.remove("flag", "flag-removing");
         delete cell.removeTimeout;
-        flagsLeft++;  // ++ vì anim hoàn thành (force)
+        // ĐÃ ++ flagsLeft khi bắt đầu gỡ → không cần ++ lại
         document.getElementById("flags").innerText = flagsLeft;
         return;
     }
 
-    // Clear timeout cũ nếu spam (nếu có timeout → cancel, không thay đổi flagsLeft vì chưa ++ thật)
+    // Cancel timeout cũ nếu spam gỡ (nếu có → revert -- vì đã ++ khi bắt đầu gỡ)
     if (cell.removeTimeout) {
         clearTimeout(cell.removeTimeout);
         delete cell.removeTimeout;
-        // Không cần revert gì vì chưa ++ flagsLeft
+        flagsLeft--;  // Revert vì chưa hoàn thành gỡ thật
     }
 
     if (!cell.flag && flagsLeft === 0) return;
 
     if (!cell.flag) {
-        // CẮM CỜ: -- flagsLeft ngay
+        // CẮM CỜ: -- ngay
         cell.flag = true;
         cell.el.innerText = "";
         cell.el.classList.remove("flag");
-        void cell.el.offsetWidth;  // Reflow restart anim plant
+        void cell.el.offsetWidth;  // Reflow → anim plant mượt
         cell.el.classList.add("flag");
         flagsLeft--;
     } else {
-        // GỠ CỜ: Chỉ bắt đầu anim, CHƯA ++ flagsLeft
+        // GỠ CỜ: ++ ngay (sync nhanh như game chuẩn)
         cell.el.classList.add("flag-removing");
         cell.removeTimeout = setTimeout(() => {
             cell.flag = false;
             cell.el.innerText = "";
             cell.el.classList.remove("flag", "flag-removing");
             delete cell.removeTimeout;
-            flagsLeft++;  // ++ CHỈ KHI anim hoàn thành thật
+            // Không ++ ở đây vì đã ++ ngay từ đầu
         }, 250);
-        // KHÔNG ++ ngay ở đây → tránh dư khi spam
+        flagsLeft++;  // ++ ngay khi bắt đầu gỡ
     }
 
     document.getElementById("flags").innerText = flagsLeft;
