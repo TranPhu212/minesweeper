@@ -105,7 +105,7 @@ function showMobileOptions(i, j, touch) {
         document.body.appendChild(flagBubble);
 
         digBubble = document.createElement("div");
-        digBubble.innerHTML = "🪏";  // Cuốc/xẻng đào mỏ chuẩn (pickaxe)
+        digBubble.innerHTML = "🪏";  // Xẻng đào chuẩn (shovel)
         digBubble.classList.add("bubble", "bubble-dig");
         document.body.appendChild(digBubble);
 
@@ -115,15 +115,11 @@ function showMobileOptions(i, j, touch) {
     }
 
     const rect = board[i][j].el.getBoundingClientRect();
-    const cellSize = rect.width;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-    // Tính vị trí TRÀN RA NGOÀI ô
-    const centerX = rect.left + cellSize / 2;
-    const centerY = rect.top + cellSize / 2;
-
-    // Bên TRÁI: Cờ 🚩 (tràn ra trái)
-    flagBubble.style.left = `${rect.left - 70}px`;  // Tràn ra trái 70px
-    flagBubble.style.top = `${centerY - 30}px`;     // Giữa chiều dọc
+    flagBubble.style.left = `${centerX - rect.width / 2 - 35}px`;
+    flagBubble.style.top = `${centerY - 30}px`;
     flagBubble.style.display = "block";
     flagBubble.classList.add("show");
     flagBubble.onclick = (e) => {
@@ -132,14 +128,14 @@ function showMobileOptions(i, j, touch) {
         hideMobileOptions();
     };
 
-    // Phía TRÊN: Đào ⛏️ (tràn lên trên)
-    digBubble.style.left = `${centerX - 30}px`;     // Giữa chiều ngang
-    digBubble.style.top = `${rect.top - 70}px`;     // Tràn lên trên 70px
+    // Trên: Đào ⛏️
+    digBubble.style.left = `${centerX - 30}px`;
+    digBubble.style.top = `${centerY - rect.height / 2 - 35}px`;
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {
         e.stopPropagation();
-        openCell(i, j);
+        openCell(i, j);  // Trigger Chord nếu ô số
         hideMobileOptions();
     };
 

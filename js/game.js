@@ -1,19 +1,51 @@
+function countFlaggedNeighbors(i, j) {
+    let count = 0;
+    for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+            let ni = i + dx;
+            let nj = j + dy;
+            if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && board[ni][nj].flag) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 function openCell(i, j) {
     if (gameOver) return;
 
     const cell = board[i][j];
+
+    // ===== CHORD MECHANIC: Ô số + flags xung quanh == số → mở hàng loạt lân cận =====
+    if (cell.open && cell.count > 0) {
+        if (countFlaggedNeighbors(i, j) === cell.count) {
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    let ni = i + dx;
+                    let nj = j + dy;
+                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols) {
+                        let neighbor = board[ni][nj];
+                        if (!neighbor.open && !neighbor.flag) {
+                            openCell(ni, nj);  // Recursive an toàn
+                        }
+                    }
+                }
+            }
+            return;
+        }
+    }
+
     if (cell.open || cell.flag) return;
 
     if (firstClick) {
         firstClick = false;
 
-        // Start timer count up
         interval = setInterval(() => {
             timer++;
             document.getElementById("time").innerText = timer;
         }, 1000);
 
-        // Start countdown nếu bật
         if (timeLimit > 0) {
             timeLeft = timeLimit;
             document.getElementById("timeLeft").innerText = timeLeft;
@@ -21,7 +53,7 @@ function openCell(i, j) {
                 timeLeft--;
                 document.getElementById("timeLeft").innerText = timeLeft;
                 if (timeLeft <= 0) {
-                    endGame(false, true); // Time out lose
+                    endGame(false, true);
                 }
             }, 1000);
         }
@@ -33,7 +65,7 @@ function openCell(i, j) {
     cell.el.classList.add("open", "shake-light");
 
     if (cell.mine) {
-        cell.el.innerText = "💣";
+        cell.el.innerText = "💣";  // Emoji mìn
         cell.el.classList.add("mine", "explode");
         endGame(false);
         return;
