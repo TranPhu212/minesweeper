@@ -333,23 +333,25 @@ h1 {
 
 .fab {
     position: fixed !important;
-    top: 20px !important;
+    bottom: 20px !important;
     right: 20px !important;
-    width: 80px !important;
-    height: 80px !important;
+    width: 70px !important;
+    height: 70px !important;
     border-radius: 50%;
     background: #3498db;
     color: white;
-    font-size: 32px;
+    font-size: 36px;
     border: none;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-    cursor: pointer;
+    cursor: move;
     z-index: 2147483647 !important;
     display: none;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease, background 0.3s ease;
-    pointer-events: auto !important;
+    transition: background 0.3s ease;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .fab:active {

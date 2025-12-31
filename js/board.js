@@ -88,12 +88,68 @@ function startGame(r, c, m) {
         }
     }
     const zoomBtn = document.getElementById("zoomBtn");
+    let isDragging = false;
+    let currentX = 0;
+    let currentY = 0;
+    let initialX = 0;
+    let initialY = 0;
+    let xOffset = 0;
+    let yOffset = 0;
 
-    zoomBtn.onclick = () => {
+    function dragStart(e) {
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+        isDragging = true;
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            e.preventDefault();
+            let clientX, clientY;
+            if (e.type === "touchmove") {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            currentX = clientX - initialX;
+            currentY = clientY - initialY;
+
+            xOffset = currentX;
+            yOffset = currentY;
+
+            zoomBtn.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+    }
+
+    function dragEnd(e) {
+        initialX = currentX;
+        initialY = currentY;
+        isDragging = false;
+    }
+    zoomBtn.addEventListener("touchstart", dragStart);
+    zoomBtn.addEventListener("touchmove", drag);
+    zoomBtn.addEventListener("touchend", dragEnd);
+    zoomBtn.addEventListener("mousedown", dragStart);
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("mouseup", dragEnd);
+    let isZoomed = false;
+    zoomBtn.addEventListener("click", (e) => {
+        if (isDragging) {
+            isDragging = false;
+            return;
+        }
         isZoomed = !isZoomed;
         document.body.classList.toggle("zoom-active", isZoomed);
         zoomBtn.innerHTML = isZoomed ? "🔍✖" : "🔍➕";
-    };
+    });
 }
 
 let flagBubble, digBubble, overlay;
