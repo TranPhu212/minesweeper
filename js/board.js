@@ -99,14 +99,13 @@ let flagBubble, digBubble, overlay;
 
 function showMobileOptions(i, j, touch) {
     if (!flagBubble) {
-        // Create once
         flagBubble = document.createElement("div");
-        flagBubble.innerHTML = "🚩";
+        flagBubble.innerHTML = "🚩";  // Icon cờ giống desktop
         flagBubble.classList.add("bubble", "bubble-flag");
         document.body.appendChild(flagBubble);
 
         digBubble = document.createElement("div");
-        digBubble.innerHTML = "⛏️";
+        digBubble.innerHTML = "🛠";  // Xẻng (shovel), không phải cúp
         digBubble.classList.add("bubble", "bubble-dig");
         document.body.appendChild(digBubble);
 
@@ -119,8 +118,8 @@ function showMobileOptions(i, j, touch) {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    // Bên trái: Cắm cờ 🚩
-    flagBubble.style.left = `${centerX - rect.width - 20}px`; // Trái ô
+    // Bên trái: Cờ 🚩
+    flagBubble.style.left = `${centerX - rect.width - 20}px`;
     flagBubble.style.top = `${centerY - 25}px`;
     flagBubble.style.display = "block";
     flagBubble.classList.add("show");
@@ -130,9 +129,9 @@ function showMobileOptions(i, j, touch) {
         hideMobileOptions();
     };
 
-    // Phía trên: Đào ⛏️
+    // Phía trên: Đào 🛠
     digBubble.style.left = `${centerX - 25}px`;
-    digBubble.style.top = `${centerY - rect.height - 20}px`; // Trên ô
+    digBubble.style.top = `${centerY - rect.height - 20}px`;
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {

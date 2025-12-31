@@ -102,40 +102,47 @@ function toggleFlag(i, j) {
     const cell = board[i][j];
     if (cell.open) return;
 
+    // ANTI-SPAM HOÀN HẢO: Không tăng dư flagsLeft
+    // Nếu đang anim gỡ → force hoàn thành ngay, ++ flagsLeft (vì chưa ++ trước đó)
     if (cell.el.classList.contains("flag-removing")) {
         if (cell.removeTimeout) clearTimeout(cell.removeTimeout);
         cell.flag = false;
         cell.el.innerText = "";
         cell.el.classList.remove("flag", "flag-removing");
         delete cell.removeTimeout;
-        flagsLeft++;
+        flagsLeft++;  // ++ vì anim hoàn thành (force)
         document.getElementById("flags").innerText = flagsLeft;
         return;
     }
 
-    if (!cell.flag && flagsLeft === 0) return;
-
+    // Clear timeout cũ nếu spam (nếu có timeout → cancel, không thay đổi flagsLeft vì chưa ++ thật)
     if (cell.removeTimeout) {
         clearTimeout(cell.removeTimeout);
         delete cell.removeTimeout;
+        // Không cần revert gì vì chưa ++ flagsLeft
     }
 
+    if (!cell.flag && flagsLeft === 0) return;
+
     if (!cell.flag) {
+        // CẮM CỜ: -- flagsLeft ngay
         cell.flag = true;
         cell.el.innerText = "";
         cell.el.classList.remove("flag");
-        void cell.el.offsetWidth;
+        void cell.el.offsetWidth;  // Reflow restart anim plant
         cell.el.classList.add("flag");
         flagsLeft--;
     } else {
+        // GỠ CỜ: Chỉ bắt đầu anim, CHƯA ++ flagsLeft
         cell.el.classList.add("flag-removing");
         cell.removeTimeout = setTimeout(() => {
             cell.flag = false;
             cell.el.innerText = "";
             cell.el.classList.remove("flag", "flag-removing");
             delete cell.removeTimeout;
+            flagsLeft++;  // ++ CHỈ KHI anim hoàn thành thật
         }, 250);
-        flagsLeft++;
+        // KHÔNG ++ ngay ở đây → tránh dư khi spam
     }
 
     document.getElementById("flags").innerText = flagsLeft;
