@@ -5,7 +5,6 @@ function startGame(r, c, m) {
     flagsLeft = m;
     timer = 0;
 
-    // Countdown setup
     const checkbox = document.getElementById("countdownCheckbox");
     if (checkbox && checkbox.checked) {
         timeLimit = parseInt(document.getElementById("timeLimitSelect").value) * 60;
@@ -93,10 +92,11 @@ function startGame(r, c, m) {
         }
     }
     const zoomBtn = document.getElementById("zoomBtn");
+
     zoomBtn.onclick = () => {
         isZoomed = !isZoomed;
         document.body.classList.toggle("zoom-active", isZoomed);
-        zoomBtn.innerHTML = isZoomed ? "close_fullscreen" : "open_in_full";
+        zoomBtn.innerHTML = isZoomed ? "🔍✖" : "🔍➕";
     };
 }
 
