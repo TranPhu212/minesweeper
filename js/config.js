@@ -8,4 +8,5 @@ let interval = null;
 let intervalCountdown = null;
 let gameOver = false;
 let firstClick = true;
+let isZoomed = false;
 let currentMode = "easy";

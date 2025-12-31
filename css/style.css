@@ -86,6 +86,7 @@ h1 {
     transform-style: preserve-3d;
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
     position: relative;
+    text-align: center;
 }
 
 .cell:active {
@@ -288,15 +289,15 @@ h1 {
 
 .bubble {
     position: fixed;
-    width: 60px;  /* Lớn hơn */
+    width: 60px;
     height: 60px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;  /* Icon to hơn */
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 36px;
     cursor: pointer;
     user-select: none;
     z-index: 1000;
@@ -370,4 +371,32 @@ h1 {
 
 .cell.wrong-flag::before {
     content: '❌';  /* Sửa từ 'Cross' */
+}
+
+.fab {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    font-size: 28px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab:active {
+    transform: scale(0.9);
+}
+
+/* Khi zoom on: board không tap được */
+.zoom-active .board-wrapper {
+    pointer-events: none;
 }

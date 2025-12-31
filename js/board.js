@@ -92,6 +92,12 @@ function startGame(r, c, m) {
             };
         }
     }
+    const zoomBtn = document.getElementById("zoomBtn");
+    zoomBtn.onclick = () => {
+        isZoomed = !isZoomed;
+        document.body.classList.toggle("zoom-active", isZoomed);
+        zoomBtn.innerHTML = isZoomed ? "close_fullscreen" : "open_in_full";
+    };
 }
 
 // MOBILE BUBBLES
@@ -115,10 +121,13 @@ function showMobileOptions(i, j, touch) {
     }
 
     const rect = board[i][j].el.getBoundingClientRect();
+    const cellSize = rect.width;
+    const gap = 2;
+    const offset = cellSize + gap + 20;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    flagBubble.style.left = `${centerX - rect.width / 2 - 35}px`;
+    flagBubble.style.left = `${rect.left - offset}px`;
     flagBubble.style.top = `${centerY - 30}px`;
     flagBubble.style.display = "block";
     flagBubble.classList.add("show");
@@ -130,7 +139,7 @@ function showMobileOptions(i, j, touch) {
 
     // Trên: Đào ⛏️
     digBubble.style.left = `${centerX - 30}px`;
-    digBubble.style.top = `${centerY - rect.height / 2 - 35}px`;
+    digBubble.style.top = `${rect.top - offset}px`;
     digBubble.style.display = "block";
     digBubble.classList.add("show");
     digBubble.onclick = (e) => {

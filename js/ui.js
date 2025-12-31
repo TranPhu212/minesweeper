@@ -68,13 +68,7 @@ document.getElementById("timeLimitSelect").addEventListener("change", restartGam
 
 // Toggle countdown panel + reset game
 document.getElementById("countdownCheckbox").addEventListener("change", function() {
-    const panel = document.getElementById("countdownPanel");
-    if (this.checked) {
-        panel.style.display = "flex";
-        updateTimeOptions();
-    } else {
-        panel.style.display = "none";
-        timeLimit = 0;
-    }
-    restartGameWithCurrentSettings(); // Reset để áp dụng bật/tắt countdown
+    const select = document.getElementById("timeLimitSelect");
+    select.style.display = this.checked ? "inline-block" : "none";
+    restartGameWithCurrentSettings();
 });

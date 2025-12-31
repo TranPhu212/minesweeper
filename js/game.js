@@ -16,18 +16,17 @@ function openCell(i, j) {
     if (gameOver) return;
 
     const cell = board[i][j];
-
-    // ===== CHORD MECHANIC: Ô số + flags xung quanh == số → mở hàng loạt lân cận =====
     if (cell.open && cell.count > 0) {
-        if (countFlaggedNeighbors(i, j) === cell.count) {
+        const flaggedNeighbors = countFlaggedNeighbors(i, j);
+        if (flaggedNeighbors === cell.count) {
             for (let dx = -1; dx <= 1; dx++) {
                 for (let dy = -1; dy <= 1; dy++) {
-                    let ni = i + dx;
-                    let nj = j + dy;
+                    const ni = i + dx;
+                    const nj = j + dy;
                     if (ni >= 0 && ni < rows && nj >= 0 && nj < cols) {
-                        let neighbor = board[ni][nj];
+                        const neighbor = board[ni][nj];
                         if (!neighbor.open && !neighbor.flag) {
-                            openCell(ni, nj);  // Recursive an toàn
+                            openCell(ni, nj);
                         }
                     }
                 }
@@ -35,7 +34,6 @@ function openCell(i, j) {
             return;
         }
     }
-
     if (cell.open || cell.flag) return;
 
     if (firstClick) {
@@ -43,15 +41,15 @@ function openCell(i, j) {
 
         interval = setInterval(() => {
             timer++;
-            document.getElementById("time").innerText = timer;
+            updateTimeDisplay();
         }, 1000);
 
         if (timeLimit > 0) {
             timeLeft = timeLimit;
-            document.getElementById("timeLeft").innerText = timeLeft;
+            updateTimeDisplay();
             intervalCountdown = setInterval(() => {
                 timeLeft--;
-                document.getElementById("timeLeft").innerText = timeLeft;
+                updateTimeDisplay();
                 if (timeLeft <= 0) {
                     endGame(false, true);
                 }
@@ -65,7 +63,7 @@ function openCell(i, j) {
     cell.el.classList.add("open", "shake-light");
 
     if (cell.mine) {
-        cell.el.innerText = "💣";  // Emoji mìn
+        cell.el.innerText = "💣";
         cell.el.classList.add("mine", "explode");
         endGame(false);
         return;
@@ -80,6 +78,7 @@ function openCell(i, j) {
 
     checkWin();
 }
+
 
 function waveFloodOpen(startI, startJ) {
     const queue = [];
@@ -133,51 +132,51 @@ function toggleFlag(i, j) {
 
     const cell = board[i][j];
     if (cell.open) return;
-
-    // ANTI-SPAM + SYNC CHÍNH XÁC: flagsLeft luôn đúng
     if (cell.el.classList.contains("flag-removing")) {
-        // Đang anim gỡ → force hoàn thành
         if (cell.removeTimeout) clearTimeout(cell.removeTimeout);
         cell.flag = false;
         cell.el.innerText = "";
         cell.el.classList.remove("flag", "flag-removing");
         delete cell.removeTimeout;
-        // ĐÃ ++ flagsLeft khi bắt đầu gỡ → không cần ++ lại
         document.getElementById("flags").innerText = flagsLeft;
         return;
     }
 
-    // Cancel timeout cũ nếu spam gỡ (nếu có → revert -- vì đã ++ khi bắt đầu gỡ)
     if (cell.removeTimeout) {
         clearTimeout(cell.removeTimeout);
         delete cell.removeTimeout;
-        flagsLeft--;  // Revert vì chưa hoàn thành gỡ thật
+        flagsLeft--;
     }
 
     if (!cell.flag && flagsLeft === 0) return;
 
     if (!cell.flag) {
-        // CẮM CỜ: -- ngay
         cell.flag = true;
         cell.el.innerText = "";
         cell.el.classList.remove("flag");
-        void cell.el.offsetWidth;  // Reflow → anim plant mượt
+        void cell.el.offsetWidth;
         cell.el.classList.add("flag");
         flagsLeft--;
     } else {
-        // GỠ CỜ: ++ ngay (sync nhanh như game chuẩn)
         cell.el.classList.add("flag-removing");
         cell.removeTimeout = setTimeout(() => {
             cell.flag = false;
             cell.el.innerText = "";
             cell.el.classList.remove("flag", "flag-removing");
             delete cell.removeTimeout;
-            // Không ++ ở đây vì đã ++ ngay từ đầu
         }, 250);
-        flagsLeft++;  // ++ ngay khi bắt đầu gỡ
+        flagsLeft++;
     }
 
     document.getElementById("flags").innerText = flagsLeft;
+}
+
+function updateTimeDisplay() {
+    if (timeLimit > 0) {
+        document.getElementById("time").innerText = timeLeft;
+    } else {
+        document.getElementById("time").innerText = timer;
+    }
 }
 
 function endGame(win, timeOut = false) {
@@ -242,12 +241,11 @@ function explodeUnflaggedMines() {
     }
     unflaggedMines.sort(() => Math.random() - 0.5);
 
-    // Nổ chậm hơn: 200ms mỗi quả
     unflaggedMines.forEach((cell, index) => {
         setTimeout(() => {
             cell.el.innerText = "💣";
             cell.el.classList.add("open", "mine", "explode");
-        }, index * 200);
+        }, index * 300);
     });
 }
 
@@ -263,7 +261,7 @@ function markWrongFlags() {
                 cell.flag = false;
                 cell.el.classList.remove("flag");
                 void cell.el.offsetWidth;
-                cell.el.classList.add("wrong-flag"); // Trigger anim rụng CUỐI CÙNG
+                cell.el.classList.add("wrong-flag");
             }
         }
     }
